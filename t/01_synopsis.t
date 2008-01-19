@@ -33,6 +33,6 @@ sub print_output {
 package MyApp;
 use Obry;
 my $app = Obry->new( );
-$app->pipeline( qw(MyEventHandler MyOutputHandler) );
+$app->pipeline( [qw(MyEventHandler MyOutputHandler)] );
 warn $app->dump;
 $app->run();

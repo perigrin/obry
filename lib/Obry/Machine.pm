@@ -5,7 +5,7 @@ use Moose::Util::TypeConstraints;
 
 symbols(qw(next_in_pipe load_handler run_handler));
 
-subtype ObryPipeline => as 'ArrayRef[Obry::Events]';
+subtype ObryPipeline => as 'ArrayRef[Obry::Event]';
 
 coerce 'ObryPipeline'
     => from 'ArrayRef[Str]'
