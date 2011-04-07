@@ -1,24 +1,15 @@
 package Obry::Constants;
-use Moose;
-use namespace::autoclean;
+use strict;
+use Sub::Exporter -setup => { exports =>
+      [qw( OK DECLINE DONE OUTPUT SERVER_ERROR HANDLER_ERROR QUEUE_ERROR )], };
 
-sub import {
-    my $pkg = caller();
-
-    $pkg->can('meta') || confess "I need a Moose-ish ->meta()";
-
-    my %exports = (
-        OK            => sub () { 'OK' },
-        DECLINE       => sub () { 'DECLINE' },
-        DONE          => sub () { 'DONE' },
-        OUTPUT        => sub () { 'OUTPUT' },
-        SERVER_ERROR  => sub () { 'SERVER_ERROR' },
-        HANDLER_ERROR => sub () { 'HANDLER_ERROR' },
-        QUEUE_ERROR   => sub () { 'QUEUE_ERROR' },
-    );
-
-    $pkg->meta->add_method( $_ => $exports{$_} ) for keys %exports;
-}
+sub OK            { 'OK' }
+sub DECLINE       { 'DECLINE' }
+sub DONE          { 'DONE' }
+sub OUTPUT        { 'OUTPUT' }
+sub SERVER_ERROR  { 'SERVER_ERROR' }
+sub HANDLER_ERROR { 'HANDLER_ERROR' }
+sub QUEUE_ERROR   { 'QUEUE_ERROR' }
 
 1;
 __END__

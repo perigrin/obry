@@ -1,28 +1,24 @@
 package Obry::Machine;
+use Moose;
 use Obry::Event;
-use Obry::Constants;
-use Moose::Util::TypeConstraints;
+use Obry::Constants qw(:all);
 
 symbols(qw(next_in_pipe load_handler run_handler));
 
-subtype ObryPipeline => as 'ArrayRef[Obry::Event]';
+use Moose::Util::TypeConstraints;
 
-coerce 'ObryPipeline' => from 'ArrayRef[Str]' => via {
-    [
-        map {
-            Class::MOP::load_class($_);
-            $_->new
-          } @$_
-    ];
-} => from 'ArrayRef[ClassName]' => via {
+role_type 'Obry::Event::API';
+my $ObryPipeline = subtype as 'ArrayRef[Obry::Event::API]';
+coerce $ObryPipeline => from 'ArrayRef[ClassName]' => via {
     [ map { $_->new } @$_ ];
 };
 
 has pipeline => (
-    isa     => 'ObryPipeline',
+    isa     => $ObryPipeline,
+    coerce  => 1,
     traits  => ['Array'],
     is      => 'rw',
-    coerce  => 1,
+    lazy    => 1,
     default => sub { [] },
     handles => {
         'add_handler'          => 'push',
@@ -37,7 +33,7 @@ has pipeline => (
 );
 
 has current_handler => (
-    isa       => 'Obry::Event',
+    does      => 'Obry::Event::API',
     is        => 'rw',
     predicate => 'has_current_handler',
     handles   => { run_current_handler => 'run', }

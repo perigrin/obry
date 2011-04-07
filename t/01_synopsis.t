@@ -4,6 +4,7 @@ use Test::More;
 {
 
     package MyEventHandler;
+    use Moose;
     use Obry::Event;
 
     symbols(qw(event_foo event_bar));
@@ -24,6 +25,7 @@ use Test::More;
 {
 
     package MyOutputHandler;
+    use Moose;
     use Obry::Event;
 
     symbols(qw(print_output));
@@ -40,7 +42,6 @@ use Test::More;
     use Obry;
     my $app = Obry->new();
     $app->pipeline( [qw(MyEventHandler MyOutputHandler)] );
-    warn $app->dump;
     $app->run();
 }
 done_testing;

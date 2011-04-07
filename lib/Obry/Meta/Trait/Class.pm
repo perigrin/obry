@@ -1,6 +1,6 @@
-package Obry::Meta::Class;
-use Moose;
-extends qw(Moose::Meta::Class);
+package Obry::Meta::Trait::Class;
+use Moose::Role;
+use namespace::autoclean;
 
 has symbols => (
     isa        => 'ArrayRef[Str]',
@@ -10,6 +10,5 @@ has symbols => (
 
 sub _build_symbols { return [] }
 
-no Moose;
 1;
 __END__
