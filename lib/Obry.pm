@@ -35,48 +35,44 @@ This document describes Obry version 0.0.1
 
 =head1 SYNOPSIS
 
-    package MyEventHandler
-    use Moose;
-    extends qw(Obry::Event);
-    
-    has '+symbols' => (
-        default =>  sub { [ qw(event_foo event_bar) ]; }, 
-    );
+    {
+        package MyEventHandler;
+        use Obry::Event;
 
-    sub event_foo {
-        my ($self, $ctxt) = @_;
-        $self->output('FOO!');
-        return 'OK';
+        symbols(qw(event_foo event_bar));
+
+        sub event_foo {
+            my ( $self, $ctxt ) = @_;
+            ::pass('foo');
+            $self->output('FOO!');
+            return 'OK';
+        }
+
+        sub event_bar {
+            my ( $self, $ctxt ) = @_;
+            $self->output('Bar!');
+            return 'OK';
+        }
     }
-    
-    sub event_bar {
-        my ($self, $ctxt) = @_;
-        $self->output('Bar!');
-        return 'OK';
+    {
+        package MyOutputHandler;
+        use Obry::Event;
+
+        symbols(qw(print_output));
+
+        sub print_output {
+            my ( $self, $ctxt ) = @_;
+            print $self->output;
+            return 'OK';
+        }
     }
-
-    package MyOutputHandler
-    use Moose;
-    extends qw(Obry::Event);
-    
-    has '+symbols' => (
-        default => sub { [ qw( print_output )]}
-    );
-
-    sub print_output {
-        my ($self, $ctxt) = @_;
-        print $self->output;
-        return 'OK';
+    {
+        package MyApp;
+        use Obry;
+        my $app = Obry->new();
+        $app->pipeline( [qw(MyEventHandler MyOutputHandler)] );
+        $app->run();
     }
-
-    package MyApp;
-    use Obry;
-    my $app = Obry->new();
-    $opp->pipeline(qw(
-        MyEventHandler
-        MyOutputHandler
-    ));
-    $app->run();
 
   
 =head1 DESCRIPTION
