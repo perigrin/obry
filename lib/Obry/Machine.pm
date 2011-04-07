@@ -7,39 +7,34 @@ symbols(qw(next_in_pipe load_handler run_handler));
 
 subtype ObryPipeline => as 'ArrayRef[Obry::Event]';
 
-coerce 'ObryPipeline'
-    => from 'ArrayRef[Str]'
-        => via {
-            [ map { 
-                Class::MOP::load_class($_);
-                $_->new
-            } @$_ ]
-        }
-    => from 'ArrayRef[ClassName]'
-        => via {
-            [ map { $_->new } @$_ ]        
-        };
+coerce 'ObryPipeline' => from 'ArrayRef[Str]' => via {
+    [
+        map {
+            Class::MOP::load_class($_);
+            $_->new
+          } @$_
+    ];
+} => from 'ArrayRef[ClassName]' => via {
+    [ map { $_->new } @$_ ];
+};
 
 has pipeline => (
-    metaclass => 'Collection::Array',
-    isa       => 'ObryPipeline',
-    is        => 'rw',
-
-    coerce    => 1,
-    default  => sub { [] },
-    provides => {
-        'push'    => 'add_handler',
-        'pop'     => 'remove_last_handler',
-        'shift'   => 'remove_first_handler',
-        'unshift' => 'insert_handler',
-        'get'     => 'get_handler_at',
-        'set'     => 'set_handler_at',
-        'count'   => 'num_handlers',
-        'empty'   => 'has_handlers',
+    isa     => 'ObryPipeline',
+    traits  => ['Array'],
+    is      => 'rw',
+    coerce  => 1,
+    default => sub { [] },
+    handles => {
+        'add_handler'          => 'push',
+        'remove_last_handler'  => 'pop',
+        'remove_first_handler' => 'shift',
+        'insert_handler'       => 'unshift',
+        'get_handler_at'       => 'get',
+        'set_handler_at'       => 'set',
+        'num_handlers'         => 'count',
+        'has_handlers'         => 'is_empty',
     },
 );
-
-
 
 has current_handler => (
     isa       => 'Obry::Event',

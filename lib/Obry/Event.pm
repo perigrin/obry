@@ -4,7 +4,6 @@ use Obry::Constants;
 use Obry::Meta::Class;
 use Obry::Context;
 
-use MooseX::AttributeHelpers;
 use MooseX::LogDispatch;
 
 use Sub::Name 'subname';
@@ -48,20 +47,20 @@ BEGIN {
 }
 
 has _symbols => (
-    metaclass  => 'Collection::Array',
     isa        => 'ArrayRef[Str]',
+    traits     => ['Array'],
     is         => 'rw',
     clearer    => 'reset_symbols',
     lazy_build => 1,
-    provides   => {
-        'push'    => 'add_to_queue',
-        'pop'     => 'remove_last_symbol',
-        'shift'   => 'remove_first_symbol',
-        'unshift' => 'insert_symbol',
-        'get'     => 'get_symbol_at',
-        'set'     => 'set_symbol_at',
-        'count'   => 'num_symbols',
-        'empty'   => 'has_symbols',
+    handles   => {
+        'add_to_queue'        => 'push',
+        'remove_last_symbol'  => 'pop',
+        'remove_first_symbol' => 'shift',
+        'insert_symbol'       => 'unshift',
+        'get_symbol_at'       => 'get',
+        'set_symbol_at'       => 'set',
+        'num_symbols'         => 'count',
+        'has_symbols'         => 'is_empty',
     },
 );
 
@@ -86,7 +85,7 @@ has context => (
 );
 
 sub _build_context {
-   Obry::Context->new(),;
+    Obry::Context->new(),;
 }
 
 sub run {

@@ -19,7 +19,7 @@ sub import {
     );
 
     for my $symbol ( keys %exports ) {
-        $pkg->meta->alias_method( $symbol => $exports{$symbol} );
+        $pkg->meta->add_method( $symbol => $exports{$symbol} );
     }
 }
 
