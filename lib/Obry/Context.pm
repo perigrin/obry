@@ -1,6 +1,6 @@
 package Obry::Context;
-use strict;
 use Moose;
+use namespace::autoclean;
 
 with qw(MooseX::Param);
 
@@ -9,6 +9,5 @@ has output => (
     is  => 'rw',
 );
 
-no Moose;
 1;
 __END__

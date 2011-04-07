@@ -4,7 +4,6 @@ use Test::More;
 {
 
     package MyEventHandler;
-    use Moose;
     use Obry::Event;
 
     symbols(qw(event_foo event_bar));
@@ -25,7 +24,6 @@ use Test::More;
 {
 
     package MyOutputHandler;
-    use Moose;
     use Obry::Event;
 
     symbols(qw(print_output));

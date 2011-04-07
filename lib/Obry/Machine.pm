@@ -1,5 +1,4 @@
 package Obry::Machine;
-use Moose;
 use Obry::Event;
 use Obry::Constants qw(:all);
 
