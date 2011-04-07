@@ -1,12 +1,11 @@
 package Obry::Constants;
 use Moose;
+use namespace::autoclean;
 
 sub import {
     my $pkg = caller();
-    return if $pkg eq 'main';
 
-    ( $pkg->can('meta') )
-      || confess "This package can only be used in Moose based classes";
+    $pkg->can('meta') || confess "I need a Moose-ish ->meta()";
 
     my %exports = (
         OK            => sub () { 'OK' },
@@ -18,11 +17,8 @@ sub import {
         QUEUE_ERROR   => sub () { 'QUEUE_ERROR' },
     );
 
-    for my $symbol ( keys %exports ) {
-        $pkg->meta->add_method( $symbol => $exports{$symbol} );
-    }
+    $pkg->meta->add_method( $_ => $exports{$_} ) for keys %exports;
 }
 
-no Moose;
 1;
 __END__
