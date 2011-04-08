@@ -5,33 +5,35 @@ use Test::More;
 
     package MyEventHandler;
     use Obry::Event;
+    use Obry::Constants qw(:all);
 
-    symbols(qw(event_foo event_bar));
+    register_events qw(event_foo event_bar);
 
     sub event_foo {
         my ( $self, $ctxt ) = @_;
         ::pass('foo');
         $self->output('FOO!');
-        return 'OK';
+        return OK;
     }
 
     sub event_bar {
         my ( $self, $ctxt ) = @_;
         $self->output('Bar!');
-        return 'OK';
+        return OK;
     }
 }
 {
 
     package MyOutputHandler;
     use Obry::Event;
+    use Obry::Constants qw(:all);
 
-    symbols(qw(print_output));
+    register_events qw(print_output);
 
     sub print_output {
         my ( $self, $ctxt ) = @_;
         print $self->output;
-        return 'OK';
+        return OK;
     }
 }
 {
@@ -42,4 +44,5 @@ use Test::More;
     $app->pipeline( [qw(MyEventHandler MyOutputHandler)] );
     $app->run();
 }
+
 done_testing;

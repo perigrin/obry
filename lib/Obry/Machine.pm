@@ -1,13 +1,14 @@
 package Obry::Machine;
 use Obry::Event;
+use namespace::autoclean;
+
 use Obry::Constants qw(:all);
-
-symbols(qw(next_in_pipe load_handler run_handler));
-
 use Moose::Util::TypeConstraints;
 
+register_events qw(next_in_pipe load_handler run_handler);
+
 role_type 'Obry::Event::API';
-my $ObryPipeline = subtype as 'ArrayRef[Obry::Event::API]';
+my $ObryPipeline = subtype as 'ArrayRef[Obry::API::Event]';
 coerce $ObryPipeline => from 'ArrayRef[ClassName]' => via {
     [ map { $_->new } @$_ ];
 };
@@ -32,13 +33,11 @@ has pipeline => (
 );
 
 has current_handler => (
-    does      => 'Obry::Event::API',
+    does      => 'Obry::API::Event',
     is        => 'rw',
     predicate => 'has_current_handler',
     handles   => { run_current_handler => 'run', }
 );
-
-#after pipeline => sub { use Data::Dumper; warn Dumper \@_ };
 
 sub next_in_pipe {
     my ($self) = @_;
@@ -68,6 +67,5 @@ sub run_handler {
     return $ret;
 }
 
-no Moose;
 1;
 __END__

@@ -1,18 +1,17 @@
-package Obry::Event::API;
+package Obry::API::Event;
 use Moose::Role;
-
 use namespace::autoclean;
 
 use Obry::Constants qw(:all);
-use Obry::Context;
 
-has _symbols => (
-    isa        => 'ArrayRef[Str]',
-    traits     => ['Array'],
-    is         => 'rw',
-    clearer    => 'reset_symbols',
-    lazy_build => 1,
-    handles    => {
+has queue => (
+    isa     => 'ArrayRef[Str]',
+    traits  => ['Array'],
+    is      => 'rw',
+    clearer => 'reset_symbols',
+    lazy    => 1,
+    builder => '_build_queue',
+    handles => {
         'add_to_queue'        => 'push',
         'remove_last_symbol'  => 'pop',
         'remove_first_symbol' => 'shift',
@@ -24,7 +23,7 @@ has _symbols => (
     },
 );
 
-sub _build__symbols {
+sub _build_queue {
     return (shift)->meta->symbols;
 }
 
@@ -38,15 +37,14 @@ has next_symbol => (
 );
 
 has context => (
-    isa        => 'Obry::Context',
-    is         => 'ro',
-    lazy_build => 1,
-    handles    => [qw(output)],
+    does    => 'Obry::API::Context',
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_context',
+    handles => 'Obry::API::Context',
 );
 
-sub _build_context {
-    Obry::Context->new(),;
-}
+sub _build_context { ( (shift)->meta->context_class )->new() }
 
 sub run {
     my ( $self, $ctxt ) = @_;

@@ -4,7 +4,7 @@ use Moose::Exporter;
 use Moose::Util::MetaRole;
 
 Moose::Exporter->setup_import_methods(
-    with_meta => ['symbols'],
+    with_meta => [qw(register_events context_class)],
     also      => ['Moose'],
 );
 
@@ -20,13 +20,14 @@ sub init_meta {
 
     Moose::Util::MetaRole::apply_base_class_roles(
         for   => $args{for_class},
-        roles => ['Obry::Event::API'],
+        roles => ['Obry::API::Event'],
     );
 
     return $args{for_class}->meta();
 }
 
-sub symbols { shift->symbols( \@_ ) }
+sub register_events       { shift->symbols( \@_ ) }
+sub context_class { shift->context_class(@_) }
 
 1;
 __END__

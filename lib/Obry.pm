@@ -43,7 +43,6 @@ This document describes Obry version 0.0.1
 
         sub event_foo {
             my ( $self, $ctxt ) = @_;
-            ::pass('foo');
             $self->output('FOO!');
             return 'OK';
         }
